@@ -82,6 +82,8 @@ std::string cam_image_topic;
 std::string cam_info_topic;
 std::string output_frame;
 
+bool new_cloud_avail;
+
 
 //Debugging utility function
 void draw3dPoints(ARCloud::Ptr cloud, string frame, int color, int id, double rad)
@@ -357,6 +359,7 @@ void getPointCloudCallback (const sensor_msgs::PointCloud2ConstPtr &msg)
 
       arPoseMarkers_.markers.clear ();
   ROS_INFO("Marker size is [%f]", marker_detector.markers->size());
+      new_cloud_avail = true;
       for (size_t i=0; i<marker_detector.markers->size(); i++)
 	{
 	  //Get the pose relative to the camera
@@ -475,6 +478,7 @@ void configCallback(ar_track_alvar::ParamsConfig &config, uint32_t level)
   max_track_error = config.max_track_error;
 }
 
+
 int main(int argc, char *argv[])
 {
   ros::init (argc, argv, "marker_detect");
@@ -533,6 +537,8 @@ int main(int argc, char *argv[])
     // This always happens, as enable is true by default
     ROS_INFO("Subscribing to image topic");
     cloud_sub_ = n.subscribe(cam_image_topic, 1, &getPointCloudCallback);
+    new_cloud_avail = false;
+
     ROS_INFO("Image topic subscription complete");
   }
 
@@ -552,9 +558,9 @@ int main(int argc, char *argv[])
       rate = ros::Rate(max_frequency);
     }
 
-    //enabledSwitched = true;
-
+    //if (enableSwitched == true)
     if (true)
+
     {
       // Enable/disable switch: subscribe/unsubscribe to make use of pointcloud processing nodelet
       // lazy publishing policy; in CPU-scarce computer as TurtleBot's laptop this is a huge saving
@@ -565,6 +571,13 @@ int main(int argc, char *argv[])
         cloud_sub_ = n.subscribe(cam_image_topic, 1, &getPointCloudCallback);
 
       enableSwitched = false;
+    }
+
+    while(!new_cloud_avail)
+    {
+      std::cout<<"waiting for first frame\n";
+      ros::Duration( 0.01 ).sleep();
+      ros::spinOnce();
     }
   }
 
