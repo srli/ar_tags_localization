@@ -1,0 +1,8 @@
+digraph G {
+"world" -> "usb_cam"[label="Broadcaster: /world_to_cam\nAverage rate: 98.966 Hz\nMost recent transform: 1429132558.226 ( -0.007 sec old)\nBuffer length: 4.981 sec\n"];
+"usb_cam" -> "ar_marker_1"[label="Broadcaster: /ar_track_alvar\nAverage rate: 10.227 Hz\nMost recent transform: 1429132558.175 ( 0.045 sec old)\nBuffer length: 4.302 sec\n"];
+edge [style=invis];
+ subgraph cluster_legend { style=bold; color=black; label ="view_frames Result";
+"Recorded at time: 1429132558.219"[ shape=plaintext ] ;
+ }->"world";
+}
