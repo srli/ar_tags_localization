@@ -23,11 +23,16 @@ def callback(data):
         marker_id = data.markers[i].id
         marker_position = data.markers[i].pose.pose.position #z is our real world x distance, x is real world y.
         marker_orientation = data.markers[i].pose.pose.orientation
-        #print marker_orientation
         euler_marker = euler_from_quaternion((marker_orientation.x, marker_orientation.y, marker_orientation.z, marker_orientation.w))
-        yaw = euler_marker[1]*(180.0/math.pi)
-        print 'rotation: ', yaw
-        found_markers.append((marker_id, marker_position, yaw))
+        marker_yaw = euler_marker[1]#*(180.0/math.pi)
+
+        marker_y = marker_position.z*math.tan(marker_yaw)
+        print "markery", marker_y
+        print "pose y", marker_position.x
+        #marker_position.x = marker_y
+
+        print 'rotation: ', marker_yaw*(180.0/math.pi)
+        found_markers.append((marker_id, marker_position, marker_yaw, marker_y))
 
     for marker in found_markers:
         try:
