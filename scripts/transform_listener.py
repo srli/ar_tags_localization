@@ -8,8 +8,22 @@ import geometry_msgs.msg
 import ar_track_alvar_msgs.msg
 
 def callback(data):
+    found_markers = []
+    x_dist = 0
+    y_dist = 0
+
     for i in range(len(data.markers)):
-        print data.markers[i].id
+        marker_id = data.markers[i].id
+        marker_position = data.markers[i].pose.pose.position #z is our real world x distance, x is real world y.
+        found_markers.append((marker_id, marker_position))
+
+    for marker in found_markers:
+        if marker[0] == 2:
+            x_dist = marker[1].z - 1
+            print marker[1]
+    #print x_dist
+
+    #print data.markers
     # try:
     #     # i = 2
     #     # if "id: "+str(i) in data.markers[0]:
