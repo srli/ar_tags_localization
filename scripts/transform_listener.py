@@ -30,7 +30,7 @@ def callback(data):
 
     #Manually populate transform dictionary here, key is the tag ID, values are real world offsets from defined origin
     #transform_dict = {tagID:(x_dist, y_dist, angle, position)}
-    transform_dict = {1:(0.3,1.6,"up"), 2:(1.25,0 , "left"), 3:(0.6,0, "right")}
+    transform_dict = {1:(0.3,1.6,0,"up"), 2:(1.25,0 ,90, "left"), 3:(0.6,0,180, "right")}
 
     for i in range(len(data.markers)):
         angles = []
@@ -38,46 +38,54 @@ def callback(data):
         if marker_id > 200: #we're only expecting tag IDs up to 200. Anything larger is likely error and is ignored
             continue       #change threshold if we end up having lots of tags... but that shouldn't happen
 
-        marker_position = data.markers[i].pose.pose.position #z is our real world x distance, x is real world y. Yep, it's confusing!
+        marker_position = data.markers[i].pose.pose.position #z is vertical distance, x is lateral. Yep, it's confusing!
+
         marker_orientation = data.markers[i].pose.pose.orientation
         euler_marker = euler_from_quaternion((marker_orientation.x, marker_orientation.y, marker_orientation.z, marker_orientation.w))
-
         marker_yaw = euler_marker[1]
 
-        calc_marker_y = marker_position.z*math.tan(marker_yaw)
+        calc_marker_y = marker_position.z*math.tan(marker_yaw) #Calculate total lateral distance between camera and tag
 
-        print "markery", marker_position.x, "markerx", marker_position.z
-        print "pose y", calc_marker_y
-        print "distance y", marker_position.x - calc_marker_y
-        #marker_position.x = marker_y
+        print "markery", marker_position.x, "markerx", marker_position.z #maker positions directly from script
+        print "pose y", calc_marker_y #distance calculated from euler angles
 
+        dist_y = marker_position.x - calc_marker_y #real world lateral distance
+        marker_position.x = dist_y
+
+        print "distance y", marker_position.x
         print 'rotation: ', marker_yaw*(180.0/math.pi)
-        found_markers.append((marker_id, marker_position, marker_yaw, calc_marker_y))
+
+        found_markers.append((marker_id, marker_position, marker_yaw))
 
     for marker in found_markers:
         try:
             dict_entry = transform_dict[marker[0]]
         except: #if a "tag" is found that we haven't defined, skip it
             continue
-        if dict_entry[2] == "up":
+        if dict_entry[3] == "up":
             x_dist = marker[1].x - dict_entry[0]
             y_dist = marker[1].z - dict_entry[1]
-        elif dict_entry[2] == "down":
+            orientation = marker[2] - dict_entry[2]
+        elif dict_entry[3] == "down":
             x_dist = dict_entry[0] - marker[1].x
             y_dist = dict_entry[1] - marker[1].z
-        elif dict_entry[2] == "left":
+            orientation = marker[2] - dict_entry[2]
+        elif dict_entry[3] == "left":
             x_dist = marker[1].z - dict_entry[0]
             y_dist = marker[1].x - dict_entry[1]
-        elif dict_entry[2] == "right":
+            orientation = marker[2] - dict_entry[2]
+        elif dict_entry[3] == "right":
             x_dist = dict_entry[0] - marker[1].z
             y_dist = dict_entry[1] - marker[1].x
-
+            orientation = marker[2] - dict_entry[2]
 
         x_dists.append(x_dist)
         y_dists.append(y_dist)
+        orientations.append(orientation)
 
     try:
-        camera_location = [int(sum(x_dists)*100/len(x_dists)), int(sum(y_dists)*100/len(y_dists))] #making everything in terms of cm
+        #now we publish the found camera location
+        camera_location = [int(sum(x_dists)*100/len(x_dists)), int(sum(y_dists)*100/len(y_dists)), int(sum(orientations)/len(orientations))] #making everything in terms of cm
         msg = Int16MultiArray()
         msg.data = camera_location
         pub.publish(msg)
