@@ -31,7 +31,7 @@ def callback(data):
     orientations = []
     #Manually populate transform dictionary here, key is the tag ID, values are real world offsets from defined origin
     #transform_dict = {tagID:(x_dist, y_dist, angle, position)}
-    transform_dict = {1:(9.56,2.13,0,"forward"), 2:(1.25,0 ,90, "backward")}#, 3:(0.6,0,180, "right")}
+    transform_dict = {1:(9.56,2.13,0,"forward"), 2:(-.43, 2.13, 90,"backward")}#, 3:(0.6,0,180, "right")}
 
     for i in range(len(data.markers)):
         angles = []
@@ -67,18 +67,18 @@ def callback(data):
             x_dist = dict_entry[0] - marker[1].z 
             y_dist = dict_entry[1] + marker[1].x
             orientation = marker[2] - dict_entry[2]
-        elif dict_entry[3] == "down":
-            x_dist = dict_entry[0] - marker[1].x
-            y_dist = dict_entry[1] - marker[1].z
-            orientation = marker[2] - dict_entry[2]
-        elif dict_entry[3] == "left":
-            x_dist = marker[1].z - dict_entry[0]
-            y_dist = marker[1].x - dict_entry[1]
-            orientation = marker[2] - dict_entry[2]
-        elif dict_entry[3] == "right":
-            x_dist = dict_entry[0] - marker[1].z
-            y_dist = dict_entry[1] - marker[1].x
-            orientation = marker[2] - dict_entry[2]
+        # elif dict_entry[3] == "down":
+        #     x_dist = dict_entry[0] - marker[1].x
+        #     y_dist = dict_entry[1] - marker[1].z
+        #     orientation = marker[2] - dict_entry[2]
+        # elif dict_entry[3] == "left":
+        #     x_dist = marker[1].z - dict_entry[0]
+        #     y_dist = marker[1].x - dict_entry[1]
+        #     orientation = marker[2] - dict_entry[2]
+        # elif dict_entry[3] == "right":
+        #     x_dist = dict_entry[0] - marker[1].z
+        #     y_dist = dict_entry[1] - marker[1].x
+        #     orientation = marker[2] - dict_entry[2]
 
         x_dists.append(x_dist)
         y_dists.append(y_dist)
