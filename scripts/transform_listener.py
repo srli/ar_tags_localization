@@ -28,9 +28,10 @@ def callback(data):
     x_dists = []
     y_dists = []
 
+    orientations = []
     #Manually populate transform dictionary here, key is the tag ID, values are real world offsets from defined origin
     #transform_dict = {tagID:(x_dist, y_dist, angle, position)}
-    transform_dict = {1:(0.3,1.6,0,"up"), 2:(1.25,0 ,90, "left"), 3:(0.6,0,180, "right")}
+    transform_dict = {1:(9.56,2.13,0,"forward"), 2:(1.25,0 ,90, "backward")}#, 3:(0.6,0,180, "right")}
 
     for i in range(len(data.markers)):
         angles = []
@@ -62,9 +63,9 @@ def callback(data):
             dict_entry = transform_dict[marker[0]]
         except: #if a "tag" is found that we haven't defined, skip it
             continue
-        if dict_entry[3] == "up":
-            x_dist = marker[1].x - dict_entry[0]
-            y_dist = marker[1].z - dict_entry[1]
+        if dict_entry[3] == "forward":
+            x_dist = dict_entry[0] - marker[1].z 
+            y_dist = dict_entry[1] + marker[1].x
             orientation = marker[2] - dict_entry[2]
         elif dict_entry[3] == "down":
             x_dist = dict_entry[0] - marker[1].x
@@ -89,7 +90,7 @@ def callback(data):
         msg = Int16MultiArray()
         msg.data = camera_location
         pub.publish(msg)
-        #print camera_location
+        print camera_location
 
     except:
         pass

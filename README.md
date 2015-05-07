@@ -13,7 +13,7 @@ Edit transform_listener.py to change tag locations to origin and to add new tags
 Transform listener broadcasts the location of the camera in the world frame with
 (x,y) and angle to the /camera_location node
 
-We considered various ways to faciliate indoor localization, initially starting with the idea of beacon detection. By finding various light becaons placed in strategic locations around the area, we would be able to extrapolate the location of the camera in the world frame through triangulation. However, issues with color filitering in noisy conditions made beacon detection a rather poor choice for reliable detection.
+We considered various ways to faciliate indoor localization, initially starting with the idea of beacon detection. By finding various light beacons placed in strategic locations around the area, we would be able to extrapolate the location of the camera in the world frame through triangulation. However, issues with color filitering in noisy conditions made beacon detection a rather poor choice for reliable detection.
 
 Localization through use of fiducials allows for reliable tag detection in a variety of lighting conditions. Given a fiducial of a known size, we can compute the position of the camera relative to said fiducial based on the distortion of the detected tag. As we know the location of each tag relative to the real world, we can then extract the location of the camera in the world frame. We are basing the majority of the math from the ar_track_alvar library. 
 
