@@ -31,7 +31,7 @@ def callback(data):
     orientations = []
     #Manually populate transform dictionary here, key is the tag ID, values are real world offsets from defined origin
     #transform_dict = {tagID:(x_dist, y_dist, angle, position)}
-    transform_dict = {1:(9.56,2.13,0,"forward"), 2:(-.43, 2.13, 90,"backward")}#, 3:(0.6,0,180, "right")}
+    transform_dict = {1:(9.56,2.13,0,"forward"), 2:(-.43, 2.13, 180,"backward")}#, 3:(0.6,0,180, "right")}
 
     for i in range(len(data.markers)):
         angles = []
@@ -56,7 +56,7 @@ def callback(data):
         print "distance y", marker_position.x
         print 'rotation: ', marker_yaw*(180.0/math.pi)
 
-        found_markers.append((marker_id, marker_position, marker_yaw))
+        found_markers.append((marker_id, marker_position, marker_yaw*(180.0/math.pi)))
 
     for marker in found_markers:
         try:
@@ -64,9 +64,15 @@ def callback(data):
         except: #if a "tag" is found that we haven't defined, skip it
             continue
         if dict_entry[3] == "forward":
-            x_dist = dict_entry[0] - marker[1].z 
+            x_dist = dict_entry[0] - marker[1].z
             y_dist = dict_entry[1] + marker[1].x
             orientation = marker[2] - dict_entry[2]
+        elif dict_entry[3] == "backward":
+            x_dist = marker[1].z - dict_entry[0]
+            y_dist = dict_entry[1] + marker[1].x
+            orientation = dict_entry[2] + marker[2]
+        else:
+            continue
         # elif dict_entry[3] == "down":
         #     x_dist = dict_entry[0] - marker[1].x
         #     y_dist = dict_entry[1] - marker[1].z
