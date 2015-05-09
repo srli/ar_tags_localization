@@ -4,6 +4,7 @@ AR tags are super cool :D
 To run, make sure usb_cam is running so ar_track_ar has a camera message to listen to.
 
 Run:
+
 	roslaunch usb_cam usb_camera.launch
 
     roslaunch ar_track_alvar robot.launch
