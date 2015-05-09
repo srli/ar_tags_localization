@@ -3,6 +3,8 @@ AR tags are super cool :D
 
 To run, make sure usb_cam is running so ar_track_ar has a camera message to listen to.
 
+Also clone the associated usb_cam repo from here  https://github.com/srli/usb_cam
+
 Run:
 
 	roslaunch usb_cam usb_camera.launch
