@@ -73,26 +73,19 @@ def callback(data):
             orientation = dict_entry[2] + marker[2]
         else:
             continue
-        # elif dict_entry[3] == "down":
-        #     x_dist = dict_entry[0] - marker[1].x
-        #     y_dist = dict_entry[1] - marker[1].z
-        #     orientation = marker[2] - dict_entry[2]
-        # elif dict_entry[3] == "left":
-        #     x_dist = marker[1].z - dict_entry[0]
-        #     y_dist = marker[1].x - dict_entry[1]
-        #     orientation = marker[2] - dict_entry[2]
-        # elif dict_entry[3] == "right":
-        #     x_dist = dict_entry[0] - marker[1].z
-        #     y_dist = dict_entry[1] - marker[1].x
-        #     orientation = marker[2] - dict_entry[2]
-
         x_dists.append(x_dist)
         y_dists.append(y_dist)
         orientations.append(orientation)
 
     try:
         #now we publish the found camera location
-        camera_location = [int(sum(x_dists)*100/len(x_dists)), int(sum(y_dists)*100/len(y_dists)), int(sum(orientations)/len(orientations))] #making everything in terms of cm
+
+        if metric:
+            scaler = 100
+        else:
+            scaler = 3.28084
+        camera_location = [int(sum(x_dists)*scaler/len(x_dists)), int(sum(y_dists)*scaler/len(y_dists)), int(sum(orientations)/len(orientations))] #making everything in terms of cm
+
         msg = Int16MultiArray()
         msg.data = camera_location
         pub.publish(msg)
@@ -105,6 +98,8 @@ def callback(data):
 
 
 if __name__ == '__main__':
+    metric = False #change this toggle to True to have output in cm
+
     rospy.init_node('alvar_listener')
 
     pub = rospy.Publisher('camera_location', Int16MultiArray,queue_size=1)
