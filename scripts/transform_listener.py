@@ -31,7 +31,7 @@ def callback(data):
     orientations = []
     #Manually populate transform dictionary here, key is the tag ID, values are real world offsets from defined origin
     #transform_dict = {tagID:(x_dist, y_dist, angle, position)}
-    transform_dict = {1:(9.56,2.13,0,"forward"), 2:(-.43, 2.13, 180,"backward")}#, 3:(0.6,0,180, "right")}
+    transform_dict = {1:(-0.43,1.22,180,"backward"), 2:(-.43, 3.05, 180,"backward"), 3:(9.56,1.22,0,"forward"), 4:(9.56,3.05,0,"forward")}
 
     for i in range(len(data.markers)):
         angles = []
