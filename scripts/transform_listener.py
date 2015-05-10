@@ -46,15 +46,7 @@ def callback(data):
         marker_yaw = euler_marker[1]
 
         calc_marker_y = marker_position.z*math.tan(marker_yaw) #Calculate total lateral distance between camera and tag
-
-        print "markery", marker_position.x, "markerx", marker_position.z #maker positions directly from script
-        print "pose y", calc_marker_y #distance calculated from euler angles
-
         dist_y = marker_position.x - calc_marker_y #real world lateral distance
-        marker_position.x = dist_y
-
-        print "distance y", marker_position.x
-        print 'rotation: ', marker_yaw*(180.0/math.pi)
 
         found_markers.append((marker_id, marker_position, marker_yaw*(180.0/math.pi)))
 
@@ -67,10 +59,12 @@ def callback(data):
             x_dist = dict_entry[0] - marker[1].z
             y_dist = dict_entry[1] + marker[1].x
             orientation = marker[2] - dict_entry[2]
+            print "id ", marker[0], ": x_dist ", x_dist, " y_dist ", y_dist, " ::marker_y ", marker[1].x
         elif dict_entry[3] == "backward":
             x_dist = marker[1].z - dict_entry[0]
-            y_dist = dict_entry[1] + marker[1].x
+            y_dist = dict_entry[1] - marker[1].x
             orientation = dict_entry[2] + marker[2]
+            print "id ", marker[0], ": x_dist ", x_dist, " y_dist ", y_dist, " ::marker_y ", marker[1].x
         else:
             continue
         x_dists.append(x_dist)
@@ -79,7 +73,6 @@ def callback(data):
 
     try:
         #now we publish the found camera location
-
         if metric:
             scaler = 100
         else:
@@ -98,7 +91,7 @@ def callback(data):
 
 
 if __name__ == '__main__':
-    metric = False #change this toggle to True to have output in cm
+    metric = False #change this toggle to True to have output in cm, default is in ft
 
     rospy.init_node('alvar_listener')
 
