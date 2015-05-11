@@ -63,7 +63,7 @@ def callback(data):
             orientation = marker[2] - dict_entry[2]
             print "id ", marker[0], ": x_dist ", x_dist, " y_dist ", y_dist#, " ::marker_y ", marker[1].x
         elif dict_entry[3] == "backward":
-            x_dist = marker[1].z - dict_entry[0]
+            x_dist = marker[1].z + dict_entry[0]
             y_dist = dict_entry[1] - marker[1].x
             orientation = dict_entry[2] + marker[2]
             print "id ", marker[0], ": x_dist ", x_dist, " y_dist ", y_dist#, " ::marker_y ", marker[1].x
